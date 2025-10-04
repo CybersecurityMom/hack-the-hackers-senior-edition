@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Scam-Spotter Certificate</title>
+<style>
+  :root{
+    --ink:#000; --accent:#3ABAEB; --accent2:#E967B8; --border: #000;
+    --maxW: 960px;
+  }
+  html,body{margin:0;padding:0;background:#fff;color:var(--ink);font-family: system-ui, Arial, sans-serif;}
+  header{padding:16px;text-align:center;border-bottom:2px solid var(--border);}
+  main{max-width:var(--maxW);margin:0 auto;padding:16px;}
+  /* Card/Form */
+  .panel{border:2px solid var(--border);border-radius:14px;padding:16px;margin:16px 0;}
+  label{display:block;font-weight:600;margin-top:10px;}
+  input{width:100%;padding:10px;font-size:1.05rem;border:2px solid var(--ink);border-radius:10px;}
+  .row{display:grid;gap:12px;grid-template-columns:1fr; }
+  .row2{display:grid;gap:12px;grid-template-columns:1fr 1fr; }
+  .btn{font-size:1.05rem;padding:12px 18px;border:2px solid var(--ink);border-radius:12px;background:#f2f2f2;cursor:pointer}
+  .btn:focus{outline:3px solid var(--ink);}
+  .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:12px;}
+  .tip{font-size:.95rem;color:#333;margin-top:8px}
+
+  /* Certificate Canvas */
+  .cert-wrap{margin:24px 0;display:flex;justify-content:center}
+  .certificate{
+    width: 11in; /* letter width */
+    max-width: 100%;
+    aspect-ratio: 11/8.5; /* landscape letter */
+    border:6px double var(--border);
+    border-radius:14px;
+    padding:32px 40px;
+    box-sizing:border-box;
+    position:relative;
+    background: #fff;
+  }
+  .brandbar{
+    position:absolute;left:0;right:0;top:0;height:10px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-bottom:2px solid var(--border);
+  }
+  .cert-title{margin-top:24px;text-align:center;font-size:2.1rem;font-weight:800;letter-spacing:.5px;}
+  .cert-sub{margin-top:6px;text-align:center;font-size:1.05rem;color:#333}
+  .cert-body{margin-top:28px;text-align:center;font-size:1.2rem;line-height:1.6;}
+  .name-line{
+    margin:18px auto 6px auto;text-align:center;
+    font-size:2rem;font-weight:800;border-bottom:3px solid var(--ink);
+    width:min(8.5in,90%); padding-bottom:8px;
+  }
+  .awarded{font-size:1rem;color:#333;margin-top:6px;}
+  .details{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:34px;}
+  .sig-block{
+    width:49%; text-align:center;
+  }
+  .sig-line{border-top:2px solid var(--ink);margin-top:40px;padding-top:6px;font-weight:600}
+  .footer-note{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:.9rem;color:#444}
+
+  /* Print tweaks */
+  @media print{
+    header, .panel, .actions { display:none !important; }
+    body{margin:0}
+    .certificate{border:6px double #000; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 style="margin:0;font-size:1.6rem;">Senior Scam-Spotter CTF — Certificates</h1>
+  <p style="margin:.25rem 0 .5rem 0;">Type the info below, generate the certificate, then click <b>Print</b>.</p>
+</header>
+
+<main>
+  <section class="panel" aria-label="Certificate form">
+    <div class="row">
+      <label for="name">Participant Name</label>
+      <input id="name" type="text" placeholder="e.g., Patricia J. Carter" autocomplete="off" />
+    </div>
+
+    <div class="row2" style="margin-top:8px;">
+      <div>
+        <label for="score">Score (optional)</label>
+        <input id="score" type="text" placeholder="e.g., 7/8 or ⭐ Badge" autocomplete="off" />
+      </div>
+      <div>
+        <label for="date">Date (auto-fills if empty)</label>
+        <input id="date" type="text" placeholder="e.g., Oct 3, 2025" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="row2" style="margin-top:8px;">
+      <div>
+        <label for="facilitator">Facilitator (optional)</label>
+        <input id="facilitator" type="text" placeholder="e.g., AQ’s Corner LLC" autocomplete="off" />
+      </div>
+      <div>
+        <label for="location">Location (optional)</label>
+        <input id="location" type="text" placeholder="e.g., Fayetteville, NC" autocomplete="off" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="genBtn">Generate Certificate</button>
+      <button class="btn" id="printBtn" style="display:none;">Print</button>
+      <button class="btn" id="clearBtn" style="display:none;">Clear</button>
+    </div>
+    <p class="tip">Tip: You can print blank certificates too — just leave fields empty and click <b>Generate</b>.</p>
+  </section>
+
+  <section class="cert-wrap" aria-label="Certificate preview">
+    <div class="certificate" id="cert">
+      <div class="brandbar" aria-hidden="true"></div>
+      <div class="cert-title">Certificate of Completion</div>
+      <div class="cert-sub">This certifies that</div>
+      <div class="name-line" id="certName">____________________________</div>
+
+      <div class="cert-body">
+        has successfully completed the
+        <b>Senior Scam-Spotter CTF</b>, demonstrating practical skills in
+        <i>pausing, verifying, and reporting</i> suspicious messages and calls.
+        <div class="awarded" id="certScore"></div>
+      </div>
+
+      <div class="details">
+        <div class="sig-block">
+          <div id="certDate">Date: ____________</div>
+          <div id="certPlace">Location: ____________</div>
+        </div>
+        <div class="sig-block">
+          <div class="sig-line" id="certFac">Facilitator</div>
+        </div>
+      </div>
+
+      <div class="footer-note">Made with ❤️ by AQ’s Corner LLC — Where Motherhood Meets Cybersecurity</div>
+    </div>
+  </section>
+</main>
+
+<script>
+const $ = (id)=>document.getElementById(id);
+const nameI = $("name"), scoreI = $("score"), dateI = $("date"), facI = $("facilitator"), locI = $("location");
+const certName = $("certName"), certScore = $("certScore"), certDate = $("certDate"), certPlace = $("certPlace"), certFac = $("certFac");
+const genBtn = $("genBtn"), printBtn = $("printBtn"), clearBtn = $("clearBtn");
+
+function fmtToday(){
+  const d = new Date();
+  const opts = {year:'numeric', month:'short', day:'numeric'};
+  return d.toLocaleDateString(undefined, opts); // uses browser locale
+}
+
+genBtn.addEventListener("click", (e)=>{
+  e.preventDefault();
+  const name = nameI.value.trim();
+  const score = scoreI.value.trim();
+  const date = (dateI.value.trim() || fmtToday());
+  const fac = (facI.value.trim() || "");
+  const loc = (locI.value.trim() || "");
+
+  certName.textContent = name || "____________________________";
+  certScore.textContent = score ? ("Achievement: " + score) : "";
+  certDate.textContent = "Date: " + (date || "___________");
+  certPlace.textContent = "Location: " + (loc || "___________");
+  certFac.textContent = fac ? fac : "Facilitator";
+
+  printBtn.style.display = "inline-block";
+  clearBtn.style.display = "inline-block";
+  // Scroll to preview for small screens
+  document.querySelector(".cert-wrap").scrollIntoView({behavior:"smooth"});
+});
+
+printBtn.addEventListener("click", (e)=>{
+  e.preventDefault();
+  window.print();
+});
+
+clearBtn.addEventListener("click", (e)=>{
+  e.preventDefault();
+  [nameI, scoreI, dateI, facI, locI].forEach(inp=>inp.value="");
+  certName.textContent = "____________________________";
+  certScore.textContent = "";
+  certDate.textContent = "Date: ____________";
+  certPlace.textContent = "Location: ____________";
+  certFac.textContent = "Facilitator";
+});
+</script>
+</body>
+</html>
