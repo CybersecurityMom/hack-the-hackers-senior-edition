@@ -1,3 +1,5 @@
+> **Hack the Hackers: Senior Edition** — A scam-spotting game designed to empower seniors with confidence and digital safety skills.
+
 # Hack the Hackers: Senior Edition
 A gentle, confidence-building Capture-the-Flag for seniors and families. No installs. No logins. Just click, read, and choose the safest move.
 
