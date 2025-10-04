@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Hack the Hackers: Senior Edition</title>
+<style>
+  :root { --maxW: 920px; }
+  body { font-family: system-ui, Arial, sans-serif; background: #fff; color: #111; margin: 0; }
+  header { background: #000; color: #fff; padding: 16px; text-align: center; }
+  main { max-width: var(--maxW); margin: 0 auto; padding: 16px; }
+  .card { border: 2px solid #000; border-radius: 14px; padding: 16px; margin: 16px 0; }
+  .title { font-size: 1.8rem; margin: 0 0 8px; }
+  .lead { font-size: 1.1rem; line-height: 1.6; }
+  .scenario { font-size: 1.15rem; line-height: 1.7; }
+  .choices { margin-top: 12px; }
+  .choices label { display: block; padding: 10px 12px; border: 1px solid #333; border-radius: 10px; margin: 8px 0; cursor: pointer; }
+  .btn { font-size: 1.1rem; padding: 12px 18px; border: 2px solid #000; border-radius: 12px; background: #f2f2f2; cursor: pointer; }
+  .btn:focus { outline: 3px solid #000; }
+  .big { font-size: 1.2rem; }
+  .feedback { padding: 12px; border-radius: 10px; margin-top: 12px; display: none; }
+  .ok { background: #e6ffe6; border: 2px solid #0a0; }
+  .bad { background: #ffecec; border: 2px solid #b00; }
+  .progress { font-weight: bold; margin: 8px 0 0; }
+  footer { text-align: center; padding: 32px 16px; color: #555; }
+  .sr-only { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+</style>
+</head>
+<body>
+  <header>
+    <h1>Hack the Hackers: Senior Edition</h1>
+    <p aria-live="polite">Pause • Verify • Delete/Report</p>
+  </header>
+
+  <main role="main">
+    <section class="card" id="intro">
+      <p class="lead">
+        You’ll see 8 real-life situations. For each one, pick the safest action. 
+        No trick questions. Go slow. Trust your gut. If it’s urgent + secret + wants money… it’s probably a scam.
+      </p>
+      <button id="startBtn" class="btn big" aria-label="Start the challenge">Start</button>
+    </section>
+
+    <section class="card" id="game" style="display:none;">
+      <div class="progress" id="progress">Scenario 1 of 8</div>
+      <h2 class="title" id="scenarioTitle">Scenario</h2>
+      <div id="scenarioText" class="scenario"></div>
+
+      <form id="choices" class="choices" aria-label="Choices"></form>
+
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+
+      <div style="margin-top:12px;">
+        <button id="submitBtn" class="btn">Check Answer</button>
+        <button id="nextBtn" class="btn" style="display:none;">Next</button>
+      </div>
+    </section>
+
+    <section class="card" id="results" style="display:none;">
+      <h2 class="title">You finished!</h2>
+      <p class="lead" id="scoreLine"></p>
+      <ul>
+        <li><b>Pause</b> when a message feels urgent.</li>
+        <li><b>Verify</b> using a trusted phone number or official site/app.</li>
+        <li><b>Delete/Report</b> suspicious messages. Never pay with gift cards or wire.</li>
+      </ul>
+      <button class="btn" onclick="window.location.reload()">Play Again</button>
+    </section>
+  </main>
+
+  <footer>
+    Made with ❤️ by AQ’s Corner LLC — Where Motherhood Meets Cybersecurity
+  </footer>
+
+<script>
+const scenarios = [
+  {
+    title: "1) The Grandparent Call",
+    text: "Late at night you get a call: “Grandma, it’s me. I’m in trouble, please don’t tell Mom or Dad. I need $1,000 in gift cards.” The caller sounds like your grandson and begs you to hurry.",
+    choices: [
+      { text: "Buy the gift cards now to help quickly.", correct: false, why: "Urgent + secret + gift cards = classic grandparent scam." },
+      { text: "Hang up and call a known family number to check.", correct: true, why: "Always verify by calling a trusted number you already have." },
+      { text: "Tell the caller your bank info instead—faster.", correct: false, why: "Never share bank info. Stop and verify first." }
+    ]
+  },
+  {
+    title: "2) Package Delivery Text",
+    text: "Text: “Your package is delayed. Click here to reschedule: packfix-update.com/track123.” You are expecting a package soon.",
+    choices: [
+      { text: "Tap the link to reschedule.", correct: false, why: "Links can steal info. Don’t tap unknown links." },
+      { text: "Open your carrier’s app or website directly to check.", correct: true, why: "Go to the official site/app yourself—not through the text." },
+      { text: "Reply STOP to unsubscribe.", correct: false, why: "Replying confirms your number is active." }
+    ]
+  },
+  {
+    title: "3) Medicare Info Request",
+    text: "A caller says, “We’re from Medicare. To keep benefits active, read me your full Social Security Number.”",
+    choices: [
+      { text: "Share your SSN so benefits don’t stop.", correct: false, why: "Medicare will not call asking for your SSN to continue benefits." },
+      { text: "Hang up, then call a verified Medicare number yourself.", correct: true, why: "Only use official numbers you look up yourself." },
+      { text: "Text your SSN—it feels safer than talking.", correct: false, why: "Never send SSN by phone or text." }
+    ]
+  },
+  {
+    title: "4) Tech Support Pop-Up",
+    text: "Your computer shows a loud pop-up: “VIRUS DETECTED! Call 1-800-555-1234 now!”",
+    choices: [
+      { text: "Call the number on the screen.", correct: false, why: "Scammers use pop-ups to make you call them." },
+      { text: "Close the browser or restart the computer.", correct: true, why: "Pop-ups are in the browser. Close it or restart." },
+      { text: "Give remote access so they can ‘fix’ it.", correct: false, why: "Never let unknown people control your computer." }
+    ]
+  },
+  {
+    title: "5) Bank Text Unlock",
+    text: "Text: “Your bank account is locked. Click to unlock now.”",
+    choices: [
+      { text: "Click the link and enter your password.", correct: false, why: "Phishing sites steal passwords." },
+      { text: "Call the number on the back of your bank card.", correct: true, why: "Verify using a trusted source you already have." },
+      { text: "Reply and ask if it’s real.", correct: false, why: "Replying confirms your number; still not safe." }
+    ]
+  },
+  {
+    title: "6) Online Romance & Gift Cards",
+    text: "A new online friend says, “Prove you care—send $200 in gift cards.”",
+    choices: [
+      { text: "Send gift cards, it’s not a lot of money.", correct: false, why: "Gift cards = untraceable. Common romance scam." },
+      { text: "Refuse and stop contact.", correct: true, why: "Requests for money are a big red flag." },
+      { text: "Offer a bank transfer instead.", correct: false, why: "Never send money to people you haven’t met and verified." }
+    ]
+  },
+  {
+    title: "7) Utility Bill Threat",
+    text: "Caller: “Your electricity will be shut off in 30 minutes unless you Zelle a payment now.”",
+    choices: [
+      { text: "Send Zelle immediately to keep the lights on.", correct: false, why: "Urgency + payment app = scam pattern." },
+      { text: "Hang up and call the number on your bill or website.", correct: true, why: "Use official numbers on your bill to verify." },
+      { text: "Give your SSN to confirm your identity.", correct: false, why: "Never give SSN to unknown callers." }
+    ]
+  },
+  {
+    title: "8) IRS Refund Fee",
+    text: "Email: “You are owed a tax refund. Pay a small fee first to release it.”",
+    choices: [
+      { text: "Pay the fee to get your refund faster.", correct: false, why: "The IRS does not ask for fees via email/text." },
+      { text: "Delete the email and sign in to your tax account directly (not via links).", correct: true, why: "Use official portals you type yourself." },
+      { text: "Reply with your bank info for direct deposit.", correct: false, why: "Never send bank info by email." }
+    ]
+  }
+];
+
+let idx = 0;
+let score = 0;
+let selected = null;
+
+const $ = (id) => document.getElementById(id);
+const startBtn = $("startBtn");
+const game = $("game");
+const intro = $("intro");
+const results = $("results");
+const progress = $("progress");
+const scenarioTitle = $("scenarioTitle");
+const scenarioText = $("scenarioText");
+const choicesForm = $("choices");
+const feedback = $("feedback");
+const submitBtn = $("submitBtn");
+const nextBtn = $("nextBtn");
+const scoreLine = $("scoreLine");
+
+startBtn.addEventListener("click", () => {
+  intro.style.display = "none";
+  game.style.display = "block";
+  loadScenario();
+});
+
+choicesForm.addEventListener("change", e => {
+  if (e.target && e.target.name === "choice") {
+    selected = Number(e.target.value);
+  }
+});
+
+submitBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  if (selected === null) { alert("Pick an answer first."); return; }
+  const sc = scenarios[idx];
+  const isCorrect = sc.choices[selected].correct;
+  feedback.style.display = "block";
+  feedback.className = "feedback " + (isCorrect ? "ok" : "bad");
+  feedback.textContent = (isCorrect ? "Correct! " : "Not quite. ") + sc.choices[selected].why;
+  if (isCorrect) score++;
+  submitBtn.style.display = "none";
+  nextBtn.style.display = "inline-block";
+});
+
+nextBtn.addEventListener("click", (e) => {
+  e.preventDefault();
+  idx++;
+  if (idx >= scenarios.length) {
+    endGame();
+  } else {
+    loadScenario();
+  }
+});
+
+function loadScenario() {
+  selected = null;
+  feedback.style.display = "none";
+  submitBtn.style.display = "inline-block";
+  nextBtn.style.display = "none";
+
+  const sc = scenarios[idx];
+  progress.textContent = `Scenario ${idx+1} of ${scenarios.length}`;
+  scenarioTitle.textContent = sc.title;
+  scenarioText.textContent = sc.text;
+
+  choicesForm.innerHTML = "";
+  sc.choices.forEach((c, i) => {
+    const id = `choice-${i}`;
+    const wrap = document.createElement("label");
+    wrap.setAttribute("for", id);
+    wrap.innerHTML = `
+      <input id="${id}" type="radio" name="choice" value="${i}" style="margin-right:8px;" />
+      ${c.text}
+    `;
+    choicesForm.appendChild(wrap);
+  });
+
+  // focus first choice for keyboard users
+  const first = choicesForm.querySelector("input");
+  if (first) first.focus();
+}
+
+function endGame() {
+  game.style.display = "none";
+  results.style.display = "block";
+  const total = scenarios.length;
+  let msg = `You scored ${score} out of ${total}. `;
+  if (score >= 7) msg += "⭐ Scam-Spotter Badge earned! Share a tip with a friend today.";
+  else if (score >= 5) msg += "Nice start. Re-play and watch for urgency + payment + secrecy.";
+  else msg += "Good learning session—run it again and watch the patterns.";
+  scoreLine.textContent = msg;
+}
+</script>
+</body>
+</html>
