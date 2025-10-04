@@ -1,4 +1,4 @@
-[![View on GitHub Pages](https://img.shields.io/badge/Play%20Now-Hack%20the%20Hackers%20Senior%20Edition-blue?style=for-the-badge)](https://YOUR-USERNAME.github.io/Hack-the-Hackers-Senior-Edition/)
+[![View on GitHub Pages](https://img.shields.io/badge/Play%20Now-Hack%20the%20Hackers%20Senior%20Edition-blue?style=for-the-badge)](https://cybersecuritymom.github.io/Hack-the-Hackers-Senior-Edition/)
 
 
 > **Hack the Hackers: Senior Edition** — A scam-spotting game designed to empower seniors with confidence and digital safety skills.
