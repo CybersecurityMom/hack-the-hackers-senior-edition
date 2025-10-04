@@ -3,7 +3,7 @@
 [![View on GitHub Pages](https://img.shields.io/badge/Play%20Now-Hack%20the%20Hackers%20Senior%20Edition-blue?style=for-the-badge)](https://YOUR-USERNAME.github.io/Hack-the-Hackers-Senior-Edition/)
 
 
-🌐 **Play Online:** [Hack the Hackers: Senior Edition](https://CybersecurityMom.github.io/Hack-the-Hackers-Senior-Edition/)
+🌐 **Play Online:** [Hack the Hackers: Senior Edition](https://cybersecuritymom.github.io/Hack-the-Hackers-Senior-Edition/)
 
 
 # Hack the Hackers: Senior Edition
